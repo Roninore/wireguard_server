@@ -26,6 +26,19 @@ class WireGuard {
         this.dbHash = undefined
         this.loadDb()
         this.localIP = JSON.parse(process.env.WG_LOCAL_IP) 
+        this.MSEC = 1
+        this.SEC = this.MSEC * 1000
+        this.MIN = this.SEC * 60
+        this.HOUR = this.MIN * 60
+        this.timetypes = {
+            'hour': this.HOUR,
+            'hours': this.HOUR,
+            'minute': this.MIN,
+            'minutes': this.MIN,
+            'second': this.SEC,
+            'seconds': this.SEC,
+        }
+        this.activeUserMaxHandshakeDelay = this.MIN * 5 
     }
     
     ip(id) {
@@ -86,7 +99,7 @@ class WireGuard {
                         sent: transferMatch[2]
                     }
                 }
-                
+                peerParts.latest_handshake_ms = this.getUserLastActivityTime(peerParts.latest_handshake)
                 peers[id] = peerParts
             }
         })
@@ -252,6 +265,27 @@ PersistentKeepalive = 20`
         }
     }
     
+    getUserLastActivityTime(latest_handshake) {
+        if (!latest_handshake)
+            return -1
+        const result = latest_handshake
+            .replace(' ago','')
+            .split(', ')
+            .reduce((ms,element) => {
+                const [count, timetype] = element.split(' ')
+                return ms + parseInt(count) * this.timetypes[timetype]
+            },0)
+        return result
+    }
+
+    async getActiveUsersCount() {
+        const peers = await this.getWgStatus()
+        return Object.values(peers)
+            .filter((element) => { return element.latest_handshake_ms > this.activeUserMaxHandshakeDelay })
+            .length
+    }
+
+
 } 
 
 module.exports = WireGuard

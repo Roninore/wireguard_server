@@ -3,8 +3,10 @@ const express = require('express')
 const http = require('http')
 const cors = require('cors')
 const fs = require('fs')
+const NetworkBandwidthMonitor = require("node-network-bandwidth-monitor");
 
 const WireGuard = require('./wireGuard')
+const {getMetrics, networkUsage, activeUsersCount} = require('./prometheus')
 
 class WebServer extends EventEmitter{
     constructor()  {
@@ -13,6 +15,12 @@ class WebServer extends EventEmitter{
     }
 
     start() {
+        const monitor = new NetworkBandwidthMonitor();
+        monitor.registerCallback((data) => {
+            networkUsage.set({type:'up'},data.uplink.kbps)
+            networkUsage.set({type:'down'},data.downlink.kbps)
+        })
+        monitor.start();
         const wireGuard = new WireGuard()
         
         const app = express()
@@ -130,6 +138,14 @@ class WebServer extends EventEmitter{
             }
 
         })
+
+        app.get('/metrics',async (req,res)=>{
+            const usersCount = await wireGuard.getActiveUsersCount()
+            activeUsersCount.set({interface:process.env.WG_SERVER_INTERFACE}, usersCount)
+            const metricsAnswer = await getMetrics()
+            res.status(200).send(metricsAnswer)
+        })
+
         httpServer.listen(this.httpPort, () => console.log(`WebServer started, on port: ${this.httpPort}`))
     }
 }
