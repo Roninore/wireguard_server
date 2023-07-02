@@ -12,15 +12,17 @@ class WebServer extends EventEmitter{
     constructor()  {
         super()
         this.httpPort = parseInt(process.env.WEBSERVER_PORT)
+        this.wg_interface = process.env.WG_SERVER_INTERFACE
+        this.network_info_interval = parseInt(process.env.NETWORK_INFO_INTERVAL)
     }
 
     start() {
-        const monitor = new NetworkBandwidthMonitor();
+        const monitor = new NetworkBandwidthMonitor(this.wg_interface,this.network_info_interval)
         monitor.registerCallback((data) => {
             networkUsage.set({type:'up'},data.uplink.kbps)
             networkUsage.set({type:'down'},data.downlink.kbps)
         })
-        monitor.start();
+        monitor.start()
         const wireGuard = new WireGuard()
         
         const app = express()
@@ -141,7 +143,7 @@ class WebServer extends EventEmitter{
 
         app.get('/metrics',async (req,res)=>{
             const usersCount = await wireGuard.getActiveUsersCount()
-            activeUsersCount.set({interface:process.env.WG_SERVER_INTERFACE}, usersCount)
+            activeUsersCount.set({interface:this.wg_interface}, usersCount)
             const metricsAnswer = await getMetrics()
             res.status(200).send(metricsAnswer)
         })
