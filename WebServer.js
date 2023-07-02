@@ -19,8 +19,8 @@ class WebServer extends EventEmitter{
     start() {
         const monitor = new NetworkBandwidthMonitor(this.wg_interface,this.network_info_interval)
         monitor.registerCallback((data) => {
-            networkUsage.observe({type:'up'},data.uplink.kbps)
-            networkUsage.observe({type:'down'},data.downlink.kbps)
+            networkUsage.observe({type:'up'},Number(data.uplink.kbps))
+            networkUsage.observe({type:'down'},Number(data.downlink.kbps))
         })
         monitor.start()
         const wireGuard = new WireGuard()
