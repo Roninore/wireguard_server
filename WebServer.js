@@ -145,6 +145,7 @@ class WebServer extends EventEmitter{
             const usersCount = await wireGuard.getActiveUsersCount()
             activeUsersCount.set({interface:this.wg_interface}, usersCount)
             const metricsAnswer = await getMetrics()
+            networkUsage.reset()
             res.status(200).send(metricsAnswer)
         })
 

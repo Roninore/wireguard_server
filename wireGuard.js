@@ -281,7 +281,7 @@ PersistentKeepalive = 20`
     async getActiveUsersCount() {
         const peers = await this.getWgStatus()
         return Object.values(peers)
-            .filter((element) => { return element.latest_handshake_ms > this.activeUserMaxHandshakeDelay })
+            .filter((element) => { return element.latest_handshake_ms > this.activeUserMaxHandshakeDelay && element.latest_handshake_ms > -1 })
             .length
     }
 
