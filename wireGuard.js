@@ -2,7 +2,6 @@ const { spawn } = require('child_process')
 const fs = require('fs')
 const path = require('path')
 const crypto = require('crypto')
-const config = require('./WebServer')
 
 function writeFileAsync(path,data) {
     return new Promise((res,rej)=>{
@@ -148,7 +147,7 @@ PersistentKeepalive = 20`
                 console.log('Create empty db config',dbPath)
                 fs.writeFileSync(dbPath,JSON.stringify('{}'))
             }
-            console.log('Load user list',dbPath)
+            console.log('Load user list',__dirname,dbPath)
             const dbString = fs.readFileSync(path.join(__dirname,dbPath),'utf8')
             const dbObject = JSON.parse(dbString)
             this.db = dbObject
@@ -161,7 +160,7 @@ PersistentKeepalive = 20`
         }
     }
     
-    async saveDb(skipCheck=false,dbPath='data/wgDb.json',wgConigPath='/etc/wireguard/wg0.conf') {
+    async saveDb(skipCheck=false,restart=true,dbPath='data/wgDb.json',wgConigPath='/etc/wireguard/wg0.conf') {
         const dbString = JSON.stringify(this.db)
         const dbHash = this.getDbHash(dbString) 
         if (!skipCheck && dbHash === this.dbHash) { console.log('Aborting, no changes'); return; }
@@ -171,7 +170,8 @@ PersistentKeepalive = 20`
         const wgConfig = this.generateWgConfig()
         await writeFileAsync(wgConigPath,wgConfig)
 
-        await this.restartWgService()
+        if (restart)
+            await this.restartWgService()
         
     }
 
