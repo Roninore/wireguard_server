@@ -13,4 +13,4 @@ services:
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     volumes:
-      - "../wireguard_server:/wireguard_server"
+      - "../data:/wireguard_server/data"
