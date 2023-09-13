@@ -1,0 +1,15 @@
+services:
+  app:
+    container_name: app
+    build:
+      context: ..
+      dockerfile: deployments/Dockerfile
+    privileged: true
+    env_file: ../.env
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    volumes:
+      - "../data:/wireguard_server/data"

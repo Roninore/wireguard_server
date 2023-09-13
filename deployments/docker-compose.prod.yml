@@ -1,0 +1,10 @@
+services:
+  app:
+    container_name: app
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: deployments/Dockerfile
+    env_file: ../.wireguard_server
+    volumes:
+      - "../wireguard_server:/wireguard_server"
