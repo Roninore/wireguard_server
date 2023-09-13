@@ -8,6 +8,7 @@ services:
     env_file: ../.env
     ports:
       - "52883:52883"
+      - "3000:3000"
     cap_add:
       - ALL
     sysctls:
