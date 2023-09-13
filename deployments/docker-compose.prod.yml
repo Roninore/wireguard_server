@@ -6,6 +6,8 @@ services:
       context: ..
       dockerfile: deployments/Dockerfile
     env_file: ../.env
+    ports:
+      - "52883:52883"
     cap_add:
       - ALL
     sysctls:
