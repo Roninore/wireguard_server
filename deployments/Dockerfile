@@ -15,5 +15,6 @@ RUN apt install -y ufw
 RUN apt install -y wireguard
 
 RUN echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
+RUN sysctl -p
 
 CMD npm start
