@@ -7,8 +7,7 @@ services:
     privileged: true
     env_file: ../.env
     cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
+      - ALL
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     volumes:

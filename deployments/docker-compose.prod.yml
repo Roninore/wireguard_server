@@ -6,5 +6,9 @@ services:
       context: ..
       dockerfile: deployments/Dockerfile
     env_file: ../.wireguard_server
+    cap_add:
+      - ALL
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
     volumes:
       - "../wireguard_server:/wireguard_server"

@@ -188,10 +188,16 @@ PersistentKeepalive = 20`
         
     }
 
-    restartWgService() {
+    async restartWgService() {
+        await new Promise((res,rej)=>{
+            console.log('Stopping WireGuard service')
+            const restartServie = spawn('wg-quick',['down','wg0'])
+            restartServie.once('close',()=>{res()})
+            restartServie.once('error',rej)
+        })
         return new Promise((res,rej)=>{
-            console.log('Restart WireGuard service')
-            const restartServie = spawn('systemctl',['restart','wg-quick@wg0'])
+            console.log('Starting WireGuard service')
+            const restartServie = spawn('wg-quick',['up','wg0'])
             restartServie.once('close',()=>{res()})
             restartServie.once('error',rej)
         })
