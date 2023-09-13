@@ -8,9 +8,11 @@ services:
     env_file: ../.env
     ports:
       - "52883:52883"
+      - "3000:3000"
     cap_add:
       - ALL
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv4.ip_forward=1
     volumes:
       - "../data:/wireguard_server/data"
