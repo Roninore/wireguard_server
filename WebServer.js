@@ -53,6 +53,17 @@ class WebServer extends EventEmitter{
             }
         })
 
+        app.post('/restart_service', async (req,res)=>{
+            try {
+                console.log("Restarting service")
+                await wireGuard.restartWgService()
+                res.status(200)
+            }
+            catch(e) {
+                console.log(e)
+                res.status(500).send('Restart error')
+            }
+        })
         
         app.post('/add_user', async (req,res)=>{
             try {
