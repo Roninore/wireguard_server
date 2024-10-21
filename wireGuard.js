@@ -89,7 +89,6 @@ class WireGuard {
             const peerParts = getParts(peerString)
             if (peerParts.allowed_ips) {
                 const id = peerParts.allowed_ips.split(' ')[0].split('/')[0].split('.')[3]
-                console.log('ID',id)
                 peerParts.id = parseInt(id)
                 if (peerParts.transfer) {
                     const transferString = peerParts.transfer
