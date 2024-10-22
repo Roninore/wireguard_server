@@ -57,7 +57,7 @@ class WebServer extends EventEmitter{
             try {
                 console.log("Restarting service")
                 await wireGuard.restartWgService()
-                res.status(200)
+                res.status(200).json({message:'OK'})
             }
             catch(e) {
                 console.log(e)
