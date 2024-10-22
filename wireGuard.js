@@ -194,12 +194,13 @@ PersistentKeepalive = 20`
             restartServie.once('close',()=>{res()})
             restartServie.once('error',rej)
         })
-        return new Promise((res,rej)=>{
+        await new Promise((res,rej)=>{
             console.log('Starting WireGuard service')
             const restartServie = spawn('wg-quick',['up','wg0'])
             restartServie.once('close',()=>{res()})
             restartServie.once('error',rej)
         })
+        console.log("Restart completed")
     }
 
     async genKeys() {
