@@ -157,7 +157,7 @@ PersistentKeepalive = 20`
         try {
             if (!fs.existsSync(dbPath)) {
                 console.log('Create empty db config',dbPath)
-                fs.writeFileSync(dbPath,JSON.stringify('{}'))
+                fs.writeFileSync(dbPath,JSON.stringify({}))
             }
             console.log('Load user list',__dirname,dbPath)
             const dbString = fs.readFileSync(path.join(__dirname,dbPath),'utf8')
